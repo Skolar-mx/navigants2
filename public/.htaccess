@@ -1,0 +1,39 @@
+DirectoryIndex index.html
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+
+# Forzar HTTPS y www (como el sitio actual)
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^ https://www.navigants.com.mx%{REQUEST_URI} [L,R=301]
+
+# Agregar diagonal final a las rutas (igual que las URLs de WordPress)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !/$
+RewriteCond %{REQUEST_URI} !\.[a-zA-Z0-9]{2,5}$
+RewriteRule ^(.*)$ /$1/ [L,R=301]
+
+# Cada página ya existe como carpeta con su index.html (prerenderizado).
+# Cualquier otra dirección responde con un 404 real.
+ErrorDocument 404 /404.html
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType image/jpeg "access plus 1 month"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(txt|xml)$">
+    Header set Cache-Control "max-age=86400"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript text/plain application/xml image/svg+xml
+</IfModule>
