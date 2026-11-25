@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/r0sel1/public_html/navigants.com.mx/
+    - /bin/cp -R public/. $DEPLOYPATH
